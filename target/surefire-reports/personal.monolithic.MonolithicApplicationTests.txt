@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: personal.monolithic.MonolithicApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.29 s -- in personal.monolithic.MonolithicApplicationTests
