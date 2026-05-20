@@ -11,7 +11,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -30,7 +29,6 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String correlationId = resolveCorrelationId(request);
 
-        ThreadContext.put(CORRELATION_ID_CONTEXT_KEY, correlationId);
         MDC.put(CORRELATION_ID_CONTEXT_KEY, correlationId);
         response.setHeader(CORRELATION_ID_HEADER, correlationId);
 
@@ -44,7 +42,6 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
             log.info("Request completed method={} path={} status={} durationMs={}", request.getMethod(), request.getRequestURI(),
                     response.getStatus(), durationMs);
             MDC.remove(CORRELATION_ID_CONTEXT_KEY);
-            ThreadContext.remove(CORRELATION_ID_CONTEXT_KEY);
         }
     }
 
