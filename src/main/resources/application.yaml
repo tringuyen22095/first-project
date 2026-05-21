@@ -27,7 +27,7 @@ springdoc:
   swagger-ui:
     persist-authorization: true
     display-request-duration: true
-    custom-js: /swagger-custom.js
+    custom-js-url: /swagger-custom.js
 
 logging:
   level:
