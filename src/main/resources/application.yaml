@@ -14,6 +14,10 @@ spring:
     username: sa
     password: admin
     driver-class-name: org.postgresql.Driver
+  flyway:
+    url: jdbc:postgresql://localhost:5432/monolithic
+    user: flyway
+    password: flyway_admin
   jpa:
     show-sql: true
     hibernate:
