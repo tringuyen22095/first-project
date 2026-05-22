@@ -1,4 +1,28 @@
+# Full-stack Docker Compose file — hot-deploy development mode.
+#
+# PRE-REQUISITE: build the JAR at least once before starting:
+#   mvn package -DskipTests
+#
+# Usage:
+#   docker compose -f docker-compose.yml up --build        # first run (builds dev image)
+#   docker compose -f docker-compose.yml up app            # start/check only the app (infra stays untouched)
+#   docker compose -f docker-compose.yml restart app       # force-restart the app container
+#   docker compose -f docker-compose.yml down              # stop containers, keep DB data
+#   docker compose -f docker-compose.yml down -v           # stop + wipe DB volume (full reset)
+#
+# Hot-deploy workflow (after first run):
+#   1. IDE rebuilds JAR  →  target/monolithic-0.0.1-SNAPSHOT.jar is updated on host
+#   2. The mounted volume propagates the change into the container automatically
+#   3. dev-entrypoint.sh detects the new timestamp and restarts the JVM — no docker command needed
+#
+# For local development without Docker (mvn spring-boot:run), use compose.yaml instead —
+# it starts only postgres and redis, and Spring Boot manages it automatically.
+
 services:
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL
+  # ---------------------------------------------------------------------------
   postgres:
     image: 'postgres:latest'
     environment:
@@ -9,7 +33,64 @@ services:
       - '5432:5432'
     volumes:
       - './src/main/resources/db/init:/docker-entrypoint-initdb.d'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U sa -d monolithic" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ---------------------------------------------------------------------------
+  # Redis
+  # ---------------------------------------------------------------------------
   redis:
     image: 'redis:latest'
     ports:
-      - '6379'
+      - '6379:6379'
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '81:81'      # application HTTP port
+      - '5005:5005'  # JDWP remote-debug port
+    volumes:
+      # Mount the host's target/ directory into the container.
+      # The watcher script looks for the JAR at /app/target/monolithic-0.0.1-SNAPSHOT.jar.
+      # When the IDE rebuilds the JAR, the new file appears here automatically and
+      # the JVM is restarted without any docker command.
+      - ./target:/app/target
+    environment:
+      # Override datasource — inside Docker the hostname is the service name, not localhost
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/monolithic'
+      - 'SPRING_DATASOURCE_USERNAME=sa'
+      - 'SPRING_DATASOURCE_PASSWORD=admin'
+
+      # Override Flyway datasource for the dedicated DDL user
+      - 'SPRING_FLYWAY_URL=jdbc:postgresql://postgres:5432/monolithic'
+      - 'SPRING_FLYWAY_USER=flyway'
+      - 'SPRING_FLYWAY_PASSWORD=flyway_admin'
+
+      # Override Redis properties
+      - 'SPRING_DATA_REDIS_HOST=redis'
+      - 'SPRING_DATA_REDIS_PORT=6379'
+      # Disable Spring Boot's Docker Compose integration — the app itself is
+      # already a container; it must not try to launch a nested Docker Compose.
+      - 'SPRING_DOCKER_COMPOSE_ENABLED=false'
+
+      # Enable JDWP remote debugging.
+      # suspend=n  → the JVM starts immediately without waiting for a debugger
+      # address=*:5005 → listen on all interfaces inside the container
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy

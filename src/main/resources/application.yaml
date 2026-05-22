@@ -1,23 +1,27 @@
 server:
-  port: 81
+  port: ${SERVER_PORT:81}
 
 spring:
   application:
     name: monolithic
   docker:
     compose:
-      enabled: true
+      enabled: ${SPRING_DOCKER_COMPOSE_ENABLED:false}
       file: compose.yaml
       lifecycle-management: start_only
   datasource:
-    url: jdbc:postgresql://localhost:5432/monolithic
-    username: sa
-    password: admin
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/monolithic}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
   flyway:
-    url: jdbc:postgresql://localhost:5432/monolithic
-    user: flyway
-    password: flyway_admin
+    url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:5432/monolithic}
+    user: ${SPRING_FLYWAY_USER:flyway}
+    password: ${SPRING_FLYWAY_PASSWORD:flyway_admin}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
   jpa:
     show-sql: true
     hibernate:
@@ -40,6 +44,6 @@ logging:
 
 security:
   jwt:
-    secret: change-this-secret-key-to-at-least-32-bytes
-    access-token-expiration-seconds: 86400
-    refresh-token-expiration-seconds: 2592000
+    secret: ${SECURITY_JWT_SECRET:change-this-secret-key-to-at-least-32-bytes}
+    access-token-expiration-seconds: ${SECURITY_JWT_ACCESS_TOKEN_EXPIRATION_SECONDS:86400}
+    refresh-token-expiration-seconds: ${SECURITY_JWT_REFRESH_TOKEN_EXPIRATION_SECONDS:2592000}
