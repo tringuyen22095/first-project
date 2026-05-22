@@ -81,10 +81,6 @@ services:
       # Override Redis properties
       - 'SPRING_DATA_REDIS_HOST=redis'
       - 'SPRING_DATA_REDIS_PORT=6379'
-      # Disable Spring Boot's Docker Compose integration — the app itself is
-      # already a container; it must not try to launch a nested Docker Compose.
-      - 'SPRING_DOCKER_COMPOSE_ENABLED=false'
-
       # Enable JDWP remote debugging.
       # suspend=n  → the JVM starts immediately without waiting for a debugger
       # address=*:5005 → listen on all interfaces inside the container

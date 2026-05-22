@@ -106,12 +106,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-docker-compose</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>1.5.2.Final</version>
@@ -282,6 +276,8 @@
                                     <executable>docker</executable>
                                     <arguments>
                                         <argument>compose</argument>
+                                        <argument>-f</argument>
+                                        <argument>compose.yaml</argument>
                                         <argument>up</argument>
                                         <argument>--build</argument>
                                         <argument>--no-recreate</argument>
