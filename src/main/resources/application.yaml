@@ -6,13 +6,13 @@ spring:
     name: monolithic
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/monolithic}
-    username: ${SPRING_DATASOURCE_USERNAME:sa}
-    password: ${SPRING_DATASOURCE_PASSWORD:admin}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   flyway:
     url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:5432/monolithic}
-    user: ${SPRING_FLYWAY_USER:flyway}
-    password: ${SPRING_FLYWAY_PASSWORD:flyway_admin}
+    user: ${SPRING_FLYWAY_USER}
+    password: ${SPRING_FLYWAY_PASSWORD}
   data:
     redis:
       host: ${SPRING_DATA_REDIS_HOST:localhost}

@@ -70,8 +70,8 @@ services:
     environment:
       # Override datasource — inside Docker the hostname is the service name, not localhost
       - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/monolithic'
-      - 'SPRING_DATASOURCE_USERNAME=sa'
-      - 'SPRING_DATASOURCE_PASSWORD=admin'
+      - 'SPRING_DATASOURCE_USERNAME=nene'
+      - 'SPRING_DATASOURCE_PASSWORD=475963218'
 
       # Override Flyway datasource for the dedicated DDL user
       - 'SPRING_FLYWAY_URL=jdbc:postgresql://postgres:5432/monolithic'
