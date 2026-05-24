@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="33f1788c-b862-44f3-b28f-500c03f04dfd" name="Changes" comment="Correct init flyway setup" />
+    <list default="true" id="33f1788c-b862-44f3-b28f-500c03f04dfd" name="Changes" comment="Commit runConfiguration for IntelliJ IDE">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -81,7 +83,7 @@
       <recent name="personal.monolithic.entity" />
     </key>
   </component>
-  <component name="RunManager" selected="Shell Script.devUp">
+  <component name="RunManager" selected="Shell Script.devDown">
     <configuration name="Start Applicaiton Only" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="personal.monolithic.MonolithicApplication" />
       <module name="monolithic" />
@@ -128,7 +130,7 @@
       </MavenSettings>
       <method v="2" />
     </configuration>
-    <configuration name="devDown" type="ShConfigurationType">
+    <configuration name="devDown" type="ShConfigurationType" activateToolWindowBeforeRun="false">
       <option name="SCRIPT_TEXT" value="docker compose down -v --rmi app" />
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
       <option name="SCRIPT_PATH" value="" />
@@ -143,7 +145,7 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="devUp" type="ShConfigurationType">
+    <configuration name="devUp" type="ShConfigurationType" activateToolWindowBeforeRun="false">
       <option name="SCRIPT_TEXT" value="mvn verify -DskipTests -X -B -Pdocker" />
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
       <option name="SCRIPT_PATH" value="" />
@@ -222,14 +224,23 @@
       <option name="project" value="LOCAL" />
       <updated>1779601694468</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Commit runConfiguration for IntelliJ IDE">
+      <option name="closed" value="true" />
+      <created>1779601878074</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1779601878074</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initialize project" />
     <MESSAGE value="Test commit" />
     <MESSAGE value="Correct init flyway setup" />
-    <option name="LAST_COMMIT_MESSAGE" value="Correct init flyway setup" />
+    <MESSAGE value="Commit runConfiguration for IntelliJ IDE" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit runConfiguration for IntelliJ IDE" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
