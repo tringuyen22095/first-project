@@ -2,6 +2,7 @@ package personal.monolithic.config;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,7 +24,10 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.util.AntPathMatcher;
 
 import lombok.RequiredArgsConstructor;
 import personal.monolithic.constants.PermissionEnum;
@@ -37,6 +41,11 @@ import personal.monolithic.security.JwtService;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private static final String[] PUBLIC_PATHS = {
+            "/sign-in", "/refresh-token", "/health-check",
+            "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/error"
+    };
+
     private final UserDao userDao;
 
     @Bean
@@ -48,11 +57,27 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/sign-in", "/refresh-token", "/health-check", "/v3/api-docs/**",
-                                "/swagger-ui.html", "/swagger-ui/**", "/error").permitAll().anyRequest().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                        auth -> auth.requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().authenticated())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .bearerTokenResolver(publicPathAwareBearerTokenResolver())
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         return http.build();
+    }
+
+    /**
+     * Returns null for public paths so BearerTokenAuthenticationFilter skips
+     * token validation entirely — preventing expired-token errors on permitAll endpoints.
+     */
+    @Bean
+    public BearerTokenResolver publicPathAwareBearerTokenResolver() {
+        DefaultBearerTokenResolver delegate = new DefaultBearerTokenResolver();
+        AntPathMatcher matcher = new AntPathMatcher();
+        return request -> {
+            String path = request.getServletPath();
+            boolean isPublic = Arrays.stream(PUBLIC_PATHS).anyMatch(pattern -> matcher.match(pattern, path));
+            return isPublic ? null : delegate.resolve(request);
+        };
     }
 
     @Bean
