@@ -1,19 +1,19 @@
-# Full-stack Docker Compose file — hot-deploy development mode.
+# Full-stack Docker Compose file — hot-deploy development mode (Tomcat + WAR).
 #
-# PRE-REQUISITE: build the JAR at least once before starting:
+# PRE-REQUISITE: build the WAR at least once before starting:
 #   mvn package -DskipTests
 #
 # Usage:
-#   docker compose -f docker-compose.yml up --build        # first run (builds dev image)
-#   docker compose -f docker-compose.yml up app            # start/check only the app (infra stays untouched)
-#   docker compose -f docker-compose.yml restart app       # force-restart the app container
-#   docker compose -f docker-compose.yml down              # stop containers, keep DB data
-#   docker compose -f docker-compose.yml down -v           # stop + wipe DB volume (full reset)
+#   docker compose -f compose.yaml up --build        # first run (builds dev image)
+#   docker compose -f compose.yaml up app            # start/check only the app (infra stays untouched)
+#   docker compose -f compose.yaml restart app       # force-restart the app container
+#   docker compose -f compose.yaml down              # stop containers, keep DB data
+#   docker compose -f compose.yaml down -v           # stop + wipe DB volume (full reset)
 #
 # Hot-deploy workflow (after first run):
-#   1. IDE rebuilds JAR  →  target/monolithic-0.0.1-SNAPSHOT.jar is updated on host
-#   2. The mounted volume propagates the change into the container automatically
-#   3. dev-entrypoint.sh detects the new timestamp and restarts the JVM — no docker command needed
+#   1. mvn package -DskipTests  →  target/ROOT.war is updated on host
+#   2. The mounted volume propagates ROOT.war into /usr/local/tomcat/webapps/ automatically
+#   3. Tomcat's autoDeploy detects the changed WAR and redeploys (~10s) — no docker command needed
 #
 # For local development without Docker (mvn spring-boot:run), use compose.yaml instead —
 # it starts only postgres and redis, and Spring Boot manages it automatically.
@@ -57,16 +57,16 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
-      - '81:81'      # application HTTP port
+      - '81:8080'    # Tomcat HTTP port (8080) exposed as 81 on host
       - '5005:5005'  # JDWP remote-debug port
     volumes:
-      # Mount the host's target/ directory into the container.
-      # The watcher script looks for the JAR at /app/target/monolithic-0.0.1-SNAPSHOT.jar.
-      # When the IDE rebuilds the JAR, the new file appears here automatically and
-      # the JVM is restarted without any docker command.
-      - ./target:/app/target
+      # Mount the host's target/ directory into Tomcat's webapps directory.
+      # When mvn package -DskipTests produces target/ROOT.war, Tomcat's
+      # autoDeploy detects the updated WAR and redeploys automatically (~10s).
+      # No docker command or container restart needed.
+      - ./target:/usr/local/tomcat/webapps
     environment:
       # Override datasource — inside Docker the hostname is the service name, not localhost
       - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/monolithic'

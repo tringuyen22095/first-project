@@ -25,31 +25,31 @@ COPY src ./src
 RUN mvn package -DskipTests -q
 
 # =============================================================================
-# Stage 2 – Runtime
-# Uses a lean JRE-only image (no compiler, no Maven) to keep the final image
-# small and reduce the attack surface.
-# A non-root system user (appuser) is created so the process does not run
-# as root inside the container.
+# Stage 2 – Runtime (Tomcat)
+# Uses the official Tomcat 10.1 image (Jakarta EE / Servlet 5+ required by
+# Spring Boot 3+/4+).  A non-root system user is created to reduce attack
+# surface.  The WAR produced by Stage 1 is deployed as ROOT.war so the
+# context path stays at / — matching the embedded-server behaviour.
 # =============================================================================
-FROM eclipse-temurin:21-jre-jammy AS runtime
+FROM tomcat:10.1-jre21-temurin AS runtime
 
-WORKDIR /app
+# Remove the bundled Tomcat sample applications
+RUN rm -rf /usr/local/tomcat/webapps/*
 
 RUN groupadd --system appgroup \
- && useradd  --system --gid appgroup appuser
+ && useradd  --system --gid appgroup appuser \
+ && chown -R appuser:appgroup /usr/local/tomcat
 
-COPY --from=builder /build/target/monolithic-0.0.1-SNAPSHOT.jar app.jar
-
-RUN chown appuser:appgroup app.jar
+COPY --from=builder /build/target/ROOT.war /usr/local/tomcat/webapps/ROOT.war
+RUN chown appuser:appgroup /usr/local/tomcat/webapps/ROOT.war
 USER appuser
 
-# 81   – application HTTP port (matches server.port in application.yaml)
+# 8080 – Tomcat HTTP port
 # 5005 – JDWP remote-debug port
-EXPOSE 81 5005
+EXPOSE 8080 5005
 
 # JAVA_TOOL_OPTIONS is read by the JVM before main() is called.
-# The docker-compose.yml sets it to enable JDWP; leave it empty here so the
+# compose.yaml sets it to enable JDWP; leave it empty here so the
 # image works without debugging when run standalone.
 ENV JAVA_TOOL_OPTIONS=""
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Tomcat's default CMD (catalina.sh run) is used — no custom ENTRYPOINT needed.

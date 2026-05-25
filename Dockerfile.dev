@@ -1,0 +1,34 @@
+# =============================================================================
+# Dockerfile.dev — Development-only image (Tomcat 10.1 + autoDeploy hot-reload)
+#
+# This image is intentionally minimal:
+#   - No source code or WAR is baked in at build time.
+#   - The host's target/ directory is mounted at /usr/local/tomcat/webapps/
+#     via compose.yaml. When mvn package -DskipTests produces target/ROOT.war,
+#     Tomcat detects the new/changed WAR via autoDeploy and redeploys automatically.
+#
+# Hot-deploy workflow:
+#   1. mvn package -DskipTests          # rebuild WAR on host
+#   2. Tomcat detects ROOT.war change   # autoDeploy fires (~10s)
+#   3. Context undeploys + redeploys    # no docker command needed
+#
+# Debug port 5005 is enabled via JAVA_TOOL_OPTIONS set in compose.yaml.
+# =============================================================================
+FROM tomcat:10.1-jre21-temurin
+
+# Remove the bundled Tomcat sample applications so only ROOT.war from the
+# mounted volume is deployed.
+RUN rm -rf /usr/local/tomcat/webapps/*
+
+# 8080 – Tomcat HTTP port (mapped to host port 81 in compose.yaml)
+# 5005 – JDWP remote-debug port
+EXPOSE 8080 5005
+
+# JAVA_TOOL_OPTIONS is read by the JVM at startup.
+# compose.yaml overrides this to inject JDWP flags; leave empty here so
+# the image works standalone without a debugger.
+ENV JAVA_TOOL_OPTIONS=""
+
+# Tomcat's default CMD (catalina.sh run) handles everything.
+# No custom ENTRYPOINT is needed — autoDeploy is enabled by default in
+# Tomcat's server.xml (backgroundProcessorDelay=10s).
