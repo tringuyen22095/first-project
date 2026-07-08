@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="33f1788c-b862-44f3-b28f-500c03f04dfd" name="Changes" comment="Commit runConfiguration for IntelliJ IDE">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,25 +54,25 @@
     <option name="showLibraryContents" value="true" />
     <option name="showScratchesAndConsoles" value="false" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Start Applicaiton.executor": "Run",
-    "Application.start.executor": "Run",
-    "Maven.Install.executor": "Run",
-    "Maven.Start.executor": "Run",
-    "Maven.devUp.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Shell Script.devDown.executor": "Run",
-    "Shell Script.devUp.executor": "Run",
-    "git-widget-placeholder": "develop",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/ixxtring/Personal/first-project",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.sourceCode"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Start Applicaiton.executor&quot;: &quot;Run&quot;,
+    &quot;Application.start.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Install.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Start.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.devUp.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Shell Script.devDown.executor&quot;: &quot;Run&quot;,
+    &quot;Shell Script.devUp.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/ixxtring/Personal/first-project&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -83,7 +83,7 @@
       <recent name="personal.monolithic.entity" />
     </key>
   </component>
-  <component name="RunManager" selected="Shell Script.devDown">
+  <component name="RunManager" selected="Shell Script.devUp">
     <configuration name="Start Applicaiton Only" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="personal.monolithic.MonolithicApplication" />
       <module name="monolithic" />
@@ -232,7 +232,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779601878074</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Commit runConfiguration for IntelliJ IDE">
+      <option name="closed" value="true" />
+      <created>1779601941669</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1779601941669</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
